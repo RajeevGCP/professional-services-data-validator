@@ -52,7 +52,7 @@ def parse_type(t):
     if t in _impala_to_ibis_type:
         return _impala_to_ibis_type[t]
     else:
-        if "varchar" in t or "char" in t:
+        if "varchar" in t or "char" in t or "date" in t:
             return "string"
         elif "decimal" in t:
             result = dt.dtype(t)

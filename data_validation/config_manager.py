@@ -274,7 +274,7 @@ class ConfigManager(object):
     @property
     def query_limit(self):
         """Return int limit for query executions."""
-        return self._config.get(consts.CONFIG_LIMIT)
+        return 3 #self._config.get(consts.CONFIG_LIMIT)
 
     @property
     def threshold(self):

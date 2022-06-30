@@ -326,6 +326,15 @@ class DataValidation(object):
                     inplace=True,
                 )
 
+            source_df.columns = [x.lower() for x in source_df.columns]
+            target_df.columns = [x.lower() for x in target_df.columns]
+            join_on_fields = set(x.lower() for x in join_on_fields)
+            
+            print("source_df")
+            print(source_df)
+            print("target_df")
+            print(target_df)
+            
             pd_schema = self._get_pandas_schema(
                 source_df, target_df, join_on_fields, verbose=self.verbose
             )
