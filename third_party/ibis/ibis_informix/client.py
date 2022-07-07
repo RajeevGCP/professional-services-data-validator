@@ -59,6 +59,8 @@ class InformixClient(SQLClient):
     def _get_schema(self, database, tablename):
         sql = api.SCHEMA_SQL.format(tablename)
         schema_df = self._execute(sql, results=True)
+        if schema_df.empty:
+            raise Exception("Unable to derive the schema for the table {}, maybe table not found?".format(tablename))
         return self._schema_reformat(schema_df)
 
     def _schema_reformat(self, schema_df):
