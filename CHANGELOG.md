@@ -2,6 +2,79 @@
 
 ## Untagged
 
+## [2.3.0](https://github.com/GoogleCloudPlatform/professional-services-data-validator/compare/v2.2.0...v2.3.0) (2022-09-15)
+
+
+### Features
+
+* Addition of log level as an argument for DVT logging and replac… ([#577](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/577)) ([dbd9bc3](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/dbd9bc387778580a106b39f4dfb9c10fd63d2f6f))
+* Oracle row level validation support ([#583](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/583)) ([489654c](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/489654ca5848b34be780a3535ecd0063075f8c97))
+
+
+### Bug Fixes
+
+* Add RawSQL support for Postgres and SQL Server ([#576](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/576)) ([0693782](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/069378271fdab08af8bfe984590b63a45c199bbb))
+* fixing String to varchar for teradata ([a979931](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/a979931787bdaa04ac0f52ee2a8946eca54e8a8e))
+* random rows with filter option ([#582](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/582)) ([da4faaf](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/da4faaf12ae65aa81310c872757d6ce4d7518106))
+* support NUMBER with no precision/scale ([#572](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/572)) ([03219ba](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/03219ba6d6b4e30bf24c62b57b916ff52bb85ee6))
+* Teradata limit on column name, bug when casting to VARCHAR ([#580](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/580)) ([c8700be](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/c8700be79315ecf8efd1c14ab7a17d236ef53adb))
+
+
+### Documentation
+
+* remove snowflake, add row supported DBs ([#587](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/587)) ([1d923f5](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/1d923f54b64a30219cb9d33533ac46f9121ecf60))
+
+## [2.2.0](https://github.com/GoogleCloudPlatform/professional-services-data-validator/compare/v2.1.0...v2.2.0) (2022-08-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* Added teradata custom query support (#547)
+
+### Features
+
+* Added teradata custom query support ([#547](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/547)) ([97c3203](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/97c320341dc6d17fc390fcd2dc503ab2411cab57))
+* Improve schema validation debugging, Support DATE for Hive validations ([#558](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/558)) ([e67de5b](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/e67de5b20623c59ce04d01e9f5acc8ea293809e1))
+* Support for MSSQL row validation ([#570](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/570)) ([61dabe0](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/61dabe0f96192f065c67ba24af9d6764e21c53f7))
+
+
+### Bug Fixes
+
+* Issue422 replace print with logging ([#543](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/543)) ([78222b4](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/78222b4d3780818112426f9e6f486301b5b9786e))
+
+
+### Miscellaneous Chores
+
+* release 2.2.0 ([#571](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/571)) ([c29b4c1](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/c29b4c1d9fb7d2d80079832bc139b8faa3f05826))
+
+## [2.1.0](https://github.com/GoogleCloudPlatform/professional-services-data-validator/compare/v2.0.1...v2.1.0) (2022-07-14)
+
+
+### Features
+
+* new flag to exclude columns from schema validation ([#507](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/507)) ([53ac41a](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/53ac41a5df368cadd47298e6484d7e82823b0fbc))
+* Remove dependency on tables list for custom query ([#541](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/541)) ([7dca5bd](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/7dca5bd9ca3d2701ef33e5b1a7925adc36bfd6d2))
+
+
+### Bug Fixes
+
+* added new result columns to schema validation ([#512](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/512)) ([478bb2d](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/478bb2d099325c5bf49f44a4aa84f7b1a17123ac))
+* close Teradata connection via object delete ([#524](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/524)) ([181b865](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/181b8654d05da3fcea78cfadd978a28282f8736b))
+* editing contributing.md ([#509](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/509)) ([c01d730](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/c01d7301129b9e42153419c85a64d59ce2f46c2b))
+* fixing teradata doc ([#513](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/513)) ([6a10356](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/6a103564da6f100f9aa601089c0ab1d5962663e3))
+* issue-256-bug fixes to generate docker file ([#531](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/531)) ([adc528e](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/adc528e999376cd088d833cd5f8465bed27b7acb))
+* issue-256-Release docker image for dvt repo ([#527](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/527)) ([e3d42cc](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/e3d42cc9a1dea092d15687e9995fa41f18f59aeb))
+* issue-256-Release docker image for dvt repo ([#529](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/529)) ([e87d0ef](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/e87d0ef54b1d3752ef3540aa5428368a778f70e5))
+* Oracle support for decimals ([#530](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/530)) ([0d73207](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/0d73207bc6ddd81d94bad62251cadb52d49e64a3))
+* primary key casting ([#521](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/521)) ([1a7667b](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/1a7667b4196b393f0d29b62d2123b082edebd3e2))
+* support for cast to timestamp in TD, support for random row ([#538](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/538)) ([f7ed739](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/f7ed739008a59e66ac8ba686ddfd7c6afced855a))
+
+
+### Documentation
+
+* fix typo on ibis_snowflake ([#516](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/516)) ([de8a4bd](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/de8a4bd6b852dc8e01e3455b65179c75c4e6d91f))
+* supported hive version ([#515](https://github.com/GoogleCloudPlatform/professional-services-data-validator/issues/515)) ([923d4ff](https://github.com/GoogleCloudPlatform/professional-services-data-validator/commit/923d4ffd05c436a11784f6d41918000fb877d2b1))
+
 ## [2.0.1](https://github.com/GoogleCloudPlatform/professional-services-data-validator/compare/v2.0.0...v2.0.1) (2022-06-10)
 
 

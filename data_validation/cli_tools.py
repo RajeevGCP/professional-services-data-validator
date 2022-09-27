@@ -47,6 +47,7 @@ import csv
 import json
 import sys
 import uuid
+import logging
 
 from data_validation import consts
 from data_validation import state_manager
@@ -158,6 +159,13 @@ def configure_arg_parser():
     )
 
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose logging")
+    parser.add_argument(
+        "--log-level",
+        "-ll",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="Log Level to be assigned. This will print logs with level same or above",
+    )
 
     subparsers = parser.add_subparsers(dest="command")
     _configure_validate_parser(subparsers)
@@ -166,7 +174,6 @@ def configure_arg_parser():
     _configure_connection_parser(subparsers)
     _configure_find_tables(subparsers)
     _configure_raw_query(subparsers)
-    _configure_run_parser(subparsers)
     _configure_beta_parser(subparsers)
     return parser
 
@@ -178,7 +185,6 @@ def _configure_beta_parser(subparsers):
     )
     beta_subparsers = connection_parser.add_subparsers(dest="beta_cmd")
 
-    _configure_run_parser(beta_subparsers)
     _configure_validate_parser(beta_subparsers)
     _configure_deploy(beta_subparsers)
 
@@ -260,96 +266,6 @@ def _configure_validation_config_parser(subparsers):
         "--config-file",
         "-c",
         help="YAML Config File Path to be used for building or running validations.",
-    )
-
-
-def _configure_run_parser(subparsers):
-    """Configure arguments to run a data validation."""
-
-    # subparsers = parser.add_subparsers(dest="command")
-
-    run_parser = subparsers.add_parser(
-        "run", help="Run a validation and optionally store to config (deprecated)"
-    )
-
-    run_parser.add_argument(
-        "--type",
-        "-t",
-        help="Type of Data Validation (Column, GroupedColumn, Row, Schema)",
-    )
-    run_parser.add_argument("--source-conn", "-sc", help="Source connection name")
-    run_parser.add_argument("--target-conn", "-tc", help="Target connection name")
-    run_parser.add_argument(
-        "--tables-list",
-        "-tbls",
-        help="Comma separated tables list in the form 'schema.table=target_schema.target_table'",
-    )
-    run_parser.add_argument(
-        "--result-handler-config", "-rc", help="Result handler config details"
-    )
-    run_parser.add_argument(
-        "--bq-result-handler", "-bqrh", help="BigQuery result handler config details"
-    )
-    run_parser.add_argument(
-        "--config-file",
-        "-c",
-        help="Store the validation in the YAML Config File Path specified",
-    )
-    run_parser.add_argument(
-        "--labels",
-        "-l",
-        help="Key value pair labels for validation run",
-    )
-    run_parser.add_argument(
-        "--hash",
-        "-hash",
-        help="Comma separated list of columns for hash 'col_a,col_b' or * for all columns",
-    )
-    run_parser.add_argument(
-        "--service-account",
-        "-sa",
-        help="Path to SA key file for result handler output",
-    )
-    run_parser.add_argument(
-        "--threshold",
-        "-th",
-        type=threshold_float,
-        help="Float max threshold for percent difference",
-    )
-    run_parser.add_argument(
-        "--filters",
-        "-filters",
-        help="Filters in the format source_filter:target_filter",
-    )
-    run_parser.add_argument(
-        "--format",
-        "-fmt",
-        default="table",
-        help="Set the format for printing command output, Supported formats are (text, csv, json, table). It defaults "
-        "to table",
-    )
-    run_parser.add_argument(
-        "--use-random-row",
-        "-rr",
-        action="store_true",
-        help="Finds a set of random rows of the first primary key supplied.",
-    )
-    run_parser.add_argument(
-        "--random-row-batch-size",
-        "-rbs",
-        help="Row batch size used for random row filters (default 10,000).",
-    )
-    run_parser.add_argument(
-        "--wildcard-include-string-len",
-        "-wis",
-        action="store_true",
-        help="Include string fields for wildcard aggregations.",
-    )
-    run_parser.add_argument(
-        "--cast-to-bigint",
-        "-ctb",
-        action="store_true",
-        help="Cast any int32 fields to int64 for large aggregations.",
     )
 
 
@@ -784,7 +700,7 @@ def list_connections():
     connections = mgr.list_connections()
 
     for conn_name in connections:
-        print(f"Connection Name: {conn_name}")
+        logging.info(f"Connection Name: {conn_name}")
 
 
 def get_connection(connection_name):
@@ -815,9 +731,9 @@ def list_validations():
     mgr = state_manager.StateManager()
     validations = mgr.list_validations()
 
-    print("Validation YAMLs found:")
+    logging.info("Validation YAMLs found:")
     for validation_name in validations:
-        print(f"{validation_name}.yaml")
+        logging.info(f"{validation_name}.yaml")
 
 
 def get_labels(arg_labels):

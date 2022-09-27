@@ -15,7 +15,7 @@
 import json
 import os
 import sys
-
+import logging
 from yaml import Dumper, dump
 
 from data_validation import (
@@ -30,6 +30,15 @@ from data_validation.data_validation import DataValidation
 
 # by default yaml dumps lists as pointers. This disables that feature
 Dumper.ignore_aliases = lambda *args: True
+
+# Log level mappings for the input argument of log level string
+LOG_LEVEL_MAP = {
+    "DEBUG": logging.DEBUG,
+    "INFO": logging.INFO,
+    "WARNING": logging.WARNING,
+    "ERROR": logging.ERROR,
+    "CRITICAL": logging.CRITICAL,
+}
 
 
 def _get_arg_config_file(args):
@@ -62,6 +71,14 @@ def get_aggregate_config(args, config_manager):
         "int64",
         "decimal",
         "timestamp",
+        "float64[non-nullable]",
+        "float32[non-nullable]",
+        "int8[non-nullable]",
+        "int16[non-nullable]",
+        "int32[non-nullable]",
+        "int64[non-nullable]",
+        "decimal[non-nullable]",
+        "timestamp[non-nullable]",
     ]
 
     if args.wildcard_include_string_len:
@@ -200,20 +217,17 @@ def build_config_managers_from_args(args):
     """Return a list of config managers ready to execute."""
     configs = []
 
-    if args.type is None:
-        validate_cmd = args.validate_cmd.capitalize()
-        if validate_cmd == "Schema":
-            config_type = consts.SCHEMA_VALIDATION
-        elif validate_cmd == "Column":
-            config_type = consts.COLUMN_VALIDATION
-        elif validate_cmd == "Row":
-            config_type = consts.ROW_VALIDATION
-        elif validate_cmd == "Custom-query":
-            config_type = consts.CUSTOM_QUERY
-        else:
-            raise ValueError(f"Unknown Validation Type: {validate_cmd}")
+    validate_cmd = args.validate_cmd.capitalize()
+    if validate_cmd == "Schema":
+        config_type = consts.SCHEMA_VALIDATION
+    elif validate_cmd == "Column":
+        config_type = consts.COLUMN_VALIDATION
+    elif validate_cmd == "Row":
+        config_type = consts.ROW_VALIDATION
+    elif validate_cmd == "Custom-query":
+        config_type = consts.CUSTOM_QUERY
     else:
-        config_type = args.type
+        raise ValueError(f"Unknown Validation Type: {validate_cmd}")
 
     result_handler_config = None
     if args.bq_result_handler:
@@ -249,7 +263,7 @@ def build_config_managers_from_args(args):
 
     is_filesystem = source_client._source_type == "FileSystem"
     tables_list = cli_tools.get_tables_list(
-        args.tables_list, default_value=[], is_filesystem=is_filesystem
+        args.tables_list, default_value=[{}], is_filesystem=is_filesystem
     )
 
     for table_obj in tables_list:
@@ -494,12 +508,16 @@ def validate(args):
 
 
 def main():
+
     # Create Parser and Get Deployment Info
     args = cli_tools.get_parsed_args()
+    logging.basicConfig(
+        level=LOG_LEVEL_MAP[args.log_level],
+        format="%(asctime)s-%(levelname)s: %(message)s",
+        datefmt="%m/%d/%Y %I:%M:%S %p",
+    )
 
-    if args.command == "run":
-        run(args)
-    elif args.command == "connections":
+    if args.command == "connections":
         run_connections(args)
     elif args.command == "run-config":
         run_config(args)

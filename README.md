@@ -14,7 +14,7 @@ perform this task.
 
 DVT supports the following validations:
 * Column validation (count, sum, avg, min, max, group by)
-* Row validation (BQ, Hive, and Teradata only)
+* Row validation (BQ, Hive, Teradata, Oracle, SQL Server, Postgres only)
 * Schema validation 
 * Custom Query validation
 * Ad hoc SQL exploration
@@ -31,7 +31,6 @@ DVT supports the following connection types:
 *   [Oracle](https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#oracle)
 *   [Postgres](https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#postgres)
 *   [Redshift](https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#redshift)
-*   [Snowflake](https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#snowflake)
 *   [Spanner](https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#google-spanner)
 *   [Teradata](https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#teradata)
 *   [Informix](https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#informix)
@@ -84,7 +83,7 @@ over all columns ('*') will only run over numeric columns, unless the
 `--wildcard-include-string-len` flag is present.
 
 ```
-data-validation (--verbose or -v) validate column
+data-validation (--verbose or -v) (--log-level or -ll) validate column
   --source-conn or -sc SOURCE_CONN
                         Source connection details
                         See: *Data Source Configurations* section for each data source
@@ -135,9 +134,9 @@ The [Examples](https://github.com/GoogleCloudPlatform/professional-services-data
 
 #### Row Validations
 
-(Note: Row hash validation is currently only supported for BigQuery, Teradata, and Imapala/Hive. Struct and array 
-data types are not currently supported. In addition, please note that SHA256 is not a supported function on teradata 
-systems. If you wish to perform this comparison on teradata you will need to 
+(Note: Row hash validation is currently supported for BigQuery, Teradata, Impala/Hive, Oracle, SQL Server, and Postgres. Struct and array data types are not currently supported and random row is not yet supported for SQL Server.
+In addition, please note that SHA256 is not a supported function on Teradata systems. 
+If you wish to perform this comparison on Teradata you will need to 
 [deploy a UDF to perform the conversion](https://github.com/akuroda/teradata-udf-sha2/blob/master/src/sha256.c).)
 
 Below is the command syntax for row validations. In order to run row level
@@ -156,7 +155,7 @@ Under the hood, row validation uses
 apply functions such as IFNULL() or RTRIM(). These can be edited in the YAML config to customize your row validation.
 
 ```
-data-validation (--verbose or -v) validate row
+data-validation (--verbose or -v) (--log-level or -ll) validate row
   --source-conn or -sc SOURCE_CONN
                         Source connection details
                         See: *Data Source Configurations* section for each data source
@@ -200,7 +199,7 @@ Below is the syntax for schema validations. These can be used to compare case in
 types between source and target.
 
 ```
-data-validation (--verbose or -v) validate schema
+data-validation (--verbose or -v) (--log-level or -ll) validate schema
   --source-conn or -sc SOURCE_CONN
                         Source connection details
                         See: *Data Source Configurations* section for each data source
@@ -229,7 +228,7 @@ data-validation (--verbose or -v) validate schema
 Below is the command syntax for custom query column validations.
 
 ```
-data-validation (--verbose or -v) validate custom-query
+data-validation (--verbose or -v) (--log-level or -ll) validate custom-query
   --source-conn or -sc SOURCE_CONN
                         Source connection details
                         See: *Data Source Configurations* section for each data source
@@ -273,16 +272,17 @@ page provides few examples of how this tool can be used to run custom query vali
 #### Custom Query Row Validations 
 
 (Note: Row hash validation is currently only supported for BigQuery, Teradata, and
-Imapala/Hive. Struct and array data types are not currently supported.)
+Impala/Hive. Struct and array data types are not currently supported.)
 
 Below is the command syntax for row validations. In order to run row level
 validations you need to pass `--hash` flag which will specify the fields
-of the custom query result that will be concatenated and hashed.
+of the custom query result that will be concatenated and hashed. The primary key should be included
+in the SELECT statement of both source_query.sql and target_query.sql
 
 Below is the command syntax for custom query row validations.
 
 ```
-data-validation (--verbose or -v) validate custom-query
+data-validation (--verbose or -v) (--log-level or -ll) validate custom-query
   --source-conn or -sc SOURCE_CONN
                         Source connection details
                         See: *Data Source Configurations* section for each data source
@@ -301,6 +301,8 @@ data-validation (--verbose or -v) validate custom-query
   --target-query-file TARGET_QUERY_FILE, -tqf TARGET_QUERY_FILE
                         File containing the target sql commands
   --hash '*'            '*' to hash all columns.
+  --primary-key or -pk JOIN_KEY
+                       Common column between source and target tables for join
   [--bq-result-handler or -bqrh PROJECT_ID.DATASET.TABLE]
                         BigQuery destination for validation results. Defaults to stdout.
                         See: *Validation Reports* section
@@ -334,7 +336,7 @@ Once the file is updated and saved, the following command runs the
 validation:
 
 ```
-data-validation configs run -c citibike.yaml
+data-validation (--verbose or -v) (--log-level or -ll) configs run -c citibike.yaml
 ```
 
 View the complete YAML file for a Grouped Column validation on the
@@ -533,4 +535,4 @@ cast to NUMERIC.
 
 ## Contributing
 
-Contributions are welcome. See the [contributing guide](https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/CONTRIBUTING.md) for details.
+Contributions are welcome. See the [Contributing guide](https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/CONTRIBUTING.md) for details.

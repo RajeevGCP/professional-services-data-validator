@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
 import ibis
 from data_validation import clients, consts
 from ibis.expr.types import StringScalar
@@ -175,18 +176,9 @@ class FilterField(object):
 
         if self.left_field:
             self.left = ibis_table[self.left_field]
-            # Cast All Datetime to Date (TODO this may be a bug in BQ)
-            if isinstance(
-                ibis_table[self.left_field].type(), ibis.expr.datatypes.Timestamp
-            ):
-                self.left = self.left.cast("date")
+
         if self.right_field:
             self.right = ibis_table[self.right_field]
-            # Cast All Datetime to Date (TODO this may be a bug in BQ)
-            if isinstance(
-                ibis_table[self.right_field].type(), ibis.expr.datatypes.Timestamp
-            ):
-                self.right = self.right.cast("date")
 
         return self.expr(self.left, self.right)
 
@@ -240,7 +232,7 @@ class GroupedField(object):
         else:
             # TODO: need to build Truncation Int support
             # TODO: should be using a logger
-            print("WARNING: Unknown cast types can cause memory errors")
+            logging.warning("Unknown cast types can cause memory errors")
 
         # The Casts require we also supply a name.
         alias = self.alias or self.field_name
@@ -482,10 +474,9 @@ class QueryBuilder(object):
             schema_name (String): The name of the schema for the given table.
             table_name (String): The name of the table to query.
         """
-        table = clients.get_ibis_table(data_client, schema_name, table_name)
+        calc_table = clients.get_ibis_table(data_client, schema_name, table_name)
 
         # Build Query Expressions
-        calc_table = table
         if self.calculated_fields:
             depth_limit = max(
                 field.config.get(consts.CONFIG_DEPTH, 0)
@@ -497,7 +488,7 @@ class QueryBuilder(object):
                 )
         if self.comparison_fields:
             calc_table = calc_table.mutate(self.compile_comparison_fields(calc_table))
-        compiled_filters = self.compile_filter_fields(table)
+        compiled_filters = self.compile_filter_fields(calc_table)
         filtered_table = (
             calc_table.filter(compiled_filters) if compiled_filters else calc_table
         )

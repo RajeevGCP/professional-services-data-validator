@@ -401,13 +401,15 @@ class ConfigManager(object):
             consts.CONFIG_TYPE: config_type,
             consts.CONFIG_SOURCE_CONN_NAME: source_conn_name,
             consts.CONFIG_TARGET_CONN_NAME: target_conn_name,
-            consts.CONFIG_TABLE_NAME: table_obj[consts.CONFIG_TABLE_NAME],
-            consts.CONFIG_SCHEMA_NAME: table_obj[consts.CONFIG_SCHEMA_NAME],
+            consts.CONFIG_TABLE_NAME: table_obj.get(consts.CONFIG_TABLE_NAME, None),
+            consts.CONFIG_SCHEMA_NAME: table_obj.get(consts.CONFIG_SCHEMA_NAME, None),
             consts.CONFIG_TARGET_SCHEMA_NAME: table_obj.get(
-                consts.CONFIG_TARGET_SCHEMA_NAME, table_obj[consts.CONFIG_SCHEMA_NAME]
+                consts.CONFIG_TARGET_SCHEMA_NAME,
+                table_obj.get(consts.CONFIG_SCHEMA_NAME, None),
             ),
             consts.CONFIG_TARGET_TABLE_NAME: table_obj.get(
-                consts.CONFIG_TARGET_TABLE_NAME, table_obj[consts.CONFIG_TABLE_NAME]
+                consts.CONFIG_TARGET_TABLE_NAME,
+                table_obj.get(consts.CONFIG_TABLE_NAME, None),
             ),
             consts.CONFIG_LABELS: labels,
             consts.CONFIG_THRESHOLD: threshold,
@@ -563,13 +565,13 @@ class ConfigManager(object):
             if column not in allowlist_columns:
                 continue
             elif column not in casefold_target_columns:
-                print(
+                logging.warning(
                     f"Skipping {agg_type} on {column} as column is not present in target table"
                 )
                 continue
             elif supported_types and column_type not in supported_types:
                 if self.verbose:
-                    print(
+                    logging.info(
                         f"Skipping {agg_type} on {column} due to data type: {column_type}"
                     )
                 continue
@@ -627,7 +629,7 @@ class ConfigManager(object):
             elif supported_types and column_type not in supported_types:
                 if self.verbose:
                     msg = f"Skipping {calc_type} on {column} due to data type: {column_type}"
-                    print(msg)
+                    logging.info(msg)
                 continue
 
         calculated_config = {
